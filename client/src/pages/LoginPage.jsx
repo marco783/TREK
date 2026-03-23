@@ -173,7 +173,7 @@ export default function LoginPage() {
           display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
         }}>
           <img src="/logo-light.svg" alt="NOMAD" style={{ height: 72 }} />
-          <p style={{ margin: 0, fontSize: 20, color: 'rgba(255,255,255,0.6)', fontFamily: "'MuseoModerno', sans-serif", textTransform: 'lowercase' }}>{t('login.tagline')}</p>
+          <p style={{ margin: 0, fontSize: 20, color: 'rgba(255,255,255,0.6)', fontFamily: "'MuseoModerno', sans-serif", textTransform: 'lowercase', whiteSpace: 'nowrap' }}>{t('login.tagline')}</p>
         </div>
 
 
@@ -416,7 +416,7 @@ export default function LoginPage() {
             className="mobile-logo">
             <style>{`@media(min-width:1024px){.mobile-logo{display:none!important}}`}</style>
             <img src="/logo-dark.svg" alt="NOMAD" style={{ height: 48 }} />
-            <p style={{ margin: 0, fontSize: 18, color: '#9ca3af', fontFamily: "'MuseoModerno', sans-serif", textTransform: 'lowercase' }}>{t('login.tagline')}</p>
+            <p style={{ margin: 0, fontSize: 16, color: '#9ca3af', fontFamily: "'MuseoModerno', sans-serif", textTransform: 'lowercase', whiteSpace: 'nowrap' }}>{t('login.tagline')}</p>
           </div>
 
           <div style={{ background: 'white', borderRadius: 20, border: '1px solid #e5e7eb', padding: '36px 32px', boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}>
