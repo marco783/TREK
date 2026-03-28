@@ -41,12 +41,12 @@ router.get('/', authenticate, requireTripAccess, (req: Request, res: Response) =
 
   if (category) {
     query += ' AND p.category_id = ?';
-    params.push(category);
+    params.push(category as string);
   }
 
   if (tag) {
     query += ' AND p.id IN (SELECT place_id FROM place_tags WHERE tag_id = ?)';
-    params.push(tag);
+    params.push(tag as string);
   }
 
   query += ' ORDER BY p.created_at DESC';
@@ -107,7 +107,7 @@ router.post('/', authenticate, requireTripAccess, validateStringLengths({ name: 
     }
   }
 
-  const place = getPlaceWithTags(placeId);
+  const place = getPlaceWithTags(Number(placeId));
   res.status(201).json({ place });
   broadcast(tripId, 'place:created', { place }, req.headers['x-socket-id'] as string);
 });

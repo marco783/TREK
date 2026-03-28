@@ -94,7 +94,7 @@ router.put('/users/:id', (req: Request, res: Response) => {
 
 router.delete('/users/:id', (req: Request, res: Response) => {
   const authReq = req as AuthRequest;
-  if (parseInt(req.params.id) === authReq.user.id) {
+  if (parseInt(req.params.id as string) === authReq.user.id) {
     return res.status(400).json({ error: 'Cannot delete own account' });
   }
 
