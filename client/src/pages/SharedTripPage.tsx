@@ -81,7 +81,7 @@ export default function SharedTripPage() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-secondary, #f3f4f6)', fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif" }}>
       {/* Header */}
-      <div style={{ background: 'linear-gradient(135deg, #000 0%, #0f172a 50%, #1e293b 100%)', color: 'white', padding: '32px 20px 28px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ background: 'linear-gradient(135deg, #000 0%, #0f172a 50%, #1e293b 100%)', color: 'white', padding: '32px 20px 28px', textAlign: 'center', position: 'relative' }}>
         {/* Cover image background */}
         {trip.cover_image && (
           <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${trip.cover_image.startsWith('http') ? trip.cover_image : trip.cover_image.startsWith('/') ? trip.cover_image : '/uploads/' + trip.cover_image})`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.15 }} />
