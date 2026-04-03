@@ -146,7 +146,7 @@ services:
       # - COOKIE_SECURE=false # Uncomment if accessing over plain HTTP (no HTTPS). Not recommended for production.
       - TRUST_PROXY=1 # Number of trusted proxies for X-Forwarded-For
       # - ALLOW_INTERNAL_NETWORK=true # Uncomment if Immich or other services are on your local network (RFC-1918 IPs)
-      - APP_URL=${APP_URL:-} # Base URL of this instance — required when OIDC is enabled; must match the redirect URI registered with your IdP
+      - APP_URL=${APP_URL:-} # Base URL of this instance — required when OIDC is enabled; must match the redirect URI registered with your IdP; Also used as the base URL for email notifications and other external links
       # - OIDC_ISSUER=https://auth.example.com # OpenID Connect provider URL
       # - OIDC_CLIENT_ID=trek # OpenID Connect client ID
       # - OIDC_CLIENT_SECRET=supersecret # OpenID Connect client secret
@@ -284,6 +284,7 @@ trek.yourdomain.com {
 | `COOKIE_SECURE` | Set to `false` to allow session cookies over plain HTTP (e.g. accessing via IP without HTTPS). Defaults to `true` in production. **Not recommended to disable in production.** | `true` |
 | `TRUST_PROXY` | Number of trusted reverse proxies for `X-Forwarded-For` | `1` |
 | `ALLOW_INTERNAL_NETWORK` | Allow outbound requests to private/RFC-1918 IP addresses. Set to `true` if Immich or other integrated services are hosted on your local network. Loopback (`127.x`) and link-local/metadata addresses (`169.254.x`) are always blocked regardless of this setting. | `false` |
+| `APP_URL` | Public base URL of this instance (e.g. `https://trek.example.com`). Required when OIDC is enabled — must match the redirect URI registered with your IdP. Also used as the base URL for external links in email notifications. | — |
 | **OIDC / SSO** | | |
 | `OIDC_ISSUER` | OpenID Connect provider URL | — |
 | `OIDC_CLIENT_ID` | OIDC client ID | — |

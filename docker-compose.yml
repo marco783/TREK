@@ -26,6 +26,7 @@ services:
 #     - COOKIE_SECURE=false # Uncomment if accessing over plain HTTP (no HTTPS). Not recommended for production.
       - TRUST_PROXY=1 # Number of trusted proxies (for X-Forwarded-For / real client IP)
       - ALLOW_INTERNAL_NETWORK=false # Set to true if Immich or other services are hosted on your local network (RFC-1918 IPs). Loopback and link-local addresses remain blocked regardless.
+#      - APP_URL=https://trek.example.com # Public base URL — required when OIDC is enabled (must match the redirect URI registered with your IdP); also used as base URL for links in email notifications
 #      - OIDC_ISSUER=https://auth.example.com # OpenID Connect provider URL
 #      - OIDC_CLIENT_ID=trek # OpenID Connect client ID
 #      - OIDC_CLIENT_SECRET=supersecret # OpenID Connect client secret
