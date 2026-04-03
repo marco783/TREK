@@ -528,7 +528,7 @@ router.get('/assets/:photoId/thumbnail', authFromQuery, async (req: Request, res
   const authReq = req as AuthRequest;
   const { photoId } = req.params;
   const parsedId = splitPackedSynologyId(photoId);
-  const { userId, cacheKey, size = 'sm' } = req.query;
+  const { userId, size = 'sm' } = req.query;
 
   const targetUserId = userId ? Number(userId) : authReq.user.id;
 
@@ -543,29 +543,15 @@ router.get('/assets/:photoId/thumbnail', authFromQuery, async (req: Request, res
       return res.status(401).send('Authentication failed');
     }
 
-    let resolvedCacheKey = cacheKey ? String(cacheKey) : parsedId.cacheKey;
-    if (!resolvedCacheKey) {
-      const row = db.prepare(`
-        SELECT asset_id FROM trip_photos
-        WHERE user_id = ? AND (asset_id = ? OR asset_id = ? OR asset_id LIKE ? OR asset_id LIKE ?)
-        ORDER BY id DESC LIMIT 1
-      `).get(targetUserId, parsedId.assetId, parsedId.id, `${parsedId.id}_%`, `${parsedId.id}::%`) as { asset_id?: string } | undefined;
-      const packed = row?.asset_id || '';
-      if (packed) {
-        resolvedCacheKey = splitPackedSynologyId(packed).cacheKey;
-      }
-    }
-    if (!resolvedCacheKey) return res.status(404).send('Missing cache key for thumbnail');
-
     const params = new URLSearchParams({
       api: 'SYNO.Foto.Thumbnail',
       method: 'get',
       version: '2',
       mode: 'download',
-      id: String(parsedId.id),
+      id: parsedId.id,
       type: 'unit',
       size: String(size),
-      cache_key: resolvedCacheKey,
+      cache_key: parsedId.cacheKey,
       _sid: sid.sid,
     });
     const url = prepareSynologyEndpoint(creds.synology_url) + '?' + params.toString();
@@ -596,9 +582,11 @@ router.get('/assets/:photoId/thumbnail', authFromQuery, async (req: Request, res
 });
 
 
-router.get('/assets/download', authFromQuery, async (req: Request, res: Response) => {
+router.get('/assets/:photoId/original', authFromQuery, async (req: Request, res: Response) => {
   const authReq = req as AuthRequest;
-  const { userId, cacheKey, unitIds } = req.query;
+  const { photoId } = req.params;
+  const parsedId = splitPackedSynologyId(photoId || '');
+  const { userId} = req.query;
 
   const targetUserId = userId ? Number(userId) : authReq.user.id;
 
@@ -617,8 +605,8 @@ router.get('/assets/download', authFromQuery, async (req: Request, res: Response
       api: 'SYNO.Foto.Download',
       method: 'download',
       version: '2',
-      cache_key: String(cacheKey),
-      unit_id: "[" + String(unitIds) + "]",
+      cache_key: parsedId.cacheKey,
+      unit_id: `[${parsedId.id}]`,
       _sid: sid.sid,
     });
 
