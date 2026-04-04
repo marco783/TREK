@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import DOM from 'react-dom'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { Plus, Trash2, Pin, PinOff, Pencil, X, Check, StickyNote, Settings, ExternalLink, Maximize2 } from 'lucide-react'
+import { Plus, Trash2, Pin, PinOff, Pencil, X, Check, StickyNote, Settings, ExternalLink, Maximize2, Loader2 } from 'lucide-react'
 import { collabApi } from '../../api/client'
 import { getAuthUrl } from '../../api/authUrl'
 import { useCanDo } from '../../store/permissionsStore'
@@ -100,6 +100,7 @@ function FilePreviewPortal({ file, onClose }: FilePreviewPortalProps) {
   const [authUrl, setAuthUrl] = useState('')
   const rawUrl = file?.url || ''
   useEffect(() => {
+    setAuthUrl('')
     if (!rawUrl) return
     getAuthUrl(rawUrl, 'download').then(setAuthUrl)
   }, [rawUrl])
@@ -119,7 +120,10 @@ function FilePreviewPortal({ file, onClose }: FilePreviewPortalProps) {
       {isImage ? (
         /* Image lightbox — floating controls */
         <div style={{ position: 'relative', maxWidth: '90vw', maxHeight: '90vh' }} onClick={e => e.stopPropagation()}>
-          <img src={authUrl} alt={file.original_name} style={{ maxWidth: '90vw', maxHeight: '90vh', objectFit: 'contain', borderRadius: 8, display: 'block' }} />
+          {authUrl
+            ? <img src={authUrl} alt={file.original_name} style={{ maxWidth: '90vw', maxHeight: '90vh', objectFit: 'contain', borderRadius: 8, display: 'block' }} />
+            : <Loader2 size={32} className="animate-spin" style={{ color: 'rgba(255,255,255,0.5)' }} />
+          }
           <div style={{ position: 'absolute', top: -36, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px' }}>
             <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '70%' }}>{file.original_name}</span>
             <div style={{ display: 'flex', gap: 8 }}>
