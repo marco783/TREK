@@ -1,4 +1,4 @@
-export async function getAuthUrl(url: string, purpose: string): Promise<string> {
+export async function getAuthUrl(url: string, purpose: 'download'): Promise<string> {
   if (!url) return url
   try {
     const resp = await fetch('/api/auth/resource-token', {
