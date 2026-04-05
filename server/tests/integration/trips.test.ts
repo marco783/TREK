@@ -89,14 +89,8 @@ describe('Create trip', () => {
     expect(days[4].date).toBe('2026-06-05');
   });
 
-  it('TRIP-002 — POST /api/trips without dates returns 201 and defaults to a 7-day window', async () => {
+  it('TRIP-002 — POST /api/trips without dates returns 201 and creates 7 dateless placeholder days', async () => {
     const { user } = createUser(testDb);
-
-    const addDays = (d: Date, n: number) => { const r = new Date(d); r.setDate(r.getDate() + n); return r; };
-    const toDateStr = (d: Date) => d.toISOString().slice(0, 10);
-    const tomorrow = addDays(new Date(), 1);
-    const expectedStart = toDateStr(tomorrow);
-    const expectedEnd = toDateStr(addDays(tomorrow, 7));
 
     const res = await request(app)
       .post('/api/trips')
@@ -105,12 +99,29 @@ describe('Create trip', () => {
 
     expect(res.status).toBe(201);
     expect(res.body.trip).toBeDefined();
-    expect(res.body.trip.start_date).toBe(expectedStart);
-    expect(res.body.trip.end_date).toBe(expectedEnd);
+    expect(res.body.trip.start_date).toBeNull();
+    expect(res.body.trip.end_date).toBeNull();
 
-    // Should have 8 days (start through end inclusive)
-    const daysWithDate = testDb.prepare('SELECT * FROM days WHERE trip_id = ? AND date IS NOT NULL').all(res.body.trip.id) as any[];
-    expect(daysWithDate).toHaveLength(8);
+    // Should have 7 dateless placeholder days
+    const days = testDb.prepare('SELECT * FROM days WHERE trip_id = ? ORDER BY day_number').all(res.body.trip.id) as any[];
+    expect(days).toHaveLength(7);
+    expect(days[0].date).toBeNull();
+  });
+
+  it('TRIP-002b — POST /api/trips with day_count creates correct number of dateless days', async () => {
+    const { user } = createUser(testDb);
+
+    const res = await request(app)
+      .post('/api/trips')
+      .set('Cookie', authCookie(user.id))
+      .send({ title: 'Custom Days Trip', day_count: 20 });
+
+    expect(res.status).toBe(201);
+    expect(res.body.trip.start_date).toBeNull();
+    expect(res.body.trip.day_count).toBe(20);
+
+    const days = testDb.prepare('SELECT * FROM days WHERE trip_id = ?').all(res.body.trip.id) as any[];
+    expect(days).toHaveLength(20);
   });
 
   it('TRIP-001 — POST /api/trips requires a title, returns 400 without one', async () => {
