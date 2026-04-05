@@ -734,7 +734,7 @@ function runMigrations(db: Database.Database): void {
       `);
     },
     () => {
-      try {db.exec('UPDATE addons SET enabled = 0 WHERE id = memories');} catch (err) {}
+      try {db.exec("UPDATE addons SET enabled = 0 WHERE id = 'memories'");} catch (err) {}
     },
     // Migration 69: Place region cache for sub-national Atlas regions
     () => {

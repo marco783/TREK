@@ -157,6 +157,7 @@ router.post('/trips/:tripId/photos', authenticate, async (req: Request, res: Res
     };
     const result = await addTripPhotos(tripId, authReq.user.id, shared, [selection], sid);
     if ('error' in result) return res.status(result.error.status!).json({ error: result.error });
+    res.json(result);
 });
 
 router.delete('/trips/:tripId/photos/:assetId', authenticate, async (req: Request, res: Response) => {
@@ -184,7 +185,8 @@ router.get('/assets/:assetId/info', authenticate, async (req: Request, res: Resp
     if (!isValidAssetId(assetId)) return res.status(400).json({ error: 'Invalid asset ID' });
     const queryUserId = req.query.userId ? Number(req.query.userId) : undefined;
     const ownerUserId = queryUserId && queryUserId !== authReq.user.id ? queryUserId : undefined;
-    if (ownerUserId && !canAccessUserPhoto(authReq.user.id, ownerUserId, req.params.tripId, assetId, 'immich')) {
+    const tripId = req.query.tripId as string;
+    if (ownerUserId && tripId && !canAccessUserPhoto(authReq.user.id, ownerUserId, tripId, assetId, 'immich')) {
         return res.status(403).json({ error: 'Forbidden' });
     }
     const result = await getAssetInfo(authReq.user.id, assetId, ownerUserId);
@@ -200,7 +202,8 @@ router.get('/assets/:assetId/thumbnail', authFromQuery, async (req: Request, res
     if (!isValidAssetId(assetId)) return res.status(400).send('Invalid asset ID');
     const queryUserId = req.query.userId ? Number(req.query.userId) : undefined;
     const ownerUserId = queryUserId && queryUserId !== authReq.user.id ? queryUserId : undefined;
-    if (ownerUserId && !canAccessUserPhoto(authReq.user.id, ownerUserId, req.params.tripId, assetId, 'immich')) {
+    const tripId = req.query.tripId as string;
+    if (ownerUserId && tripId && !canAccessUserPhoto(authReq.user.id, ownerUserId, tripId, assetId, 'immich')) {
         return res.status(403).send('Forbidden');
     }
     const result = await proxyThumbnail(authReq.user.id, assetId, ownerUserId);
@@ -216,7 +219,8 @@ router.get('/assets/:assetId/original', authFromQuery, async (req: Request, res:
     if (!isValidAssetId(assetId)) return res.status(400).send('Invalid asset ID');
     const queryUserId = req.query.userId ? Number(req.query.userId) : undefined;
     const ownerUserId = queryUserId && queryUserId !== authReq.user.id ? queryUserId : undefined;
-    if (ownerUserId && !canAccessUserPhoto(authReq.user.id, ownerUserId, req.params.tripId, assetId, 'immich')) {
+    const tripId = req.query.tripId as string;
+    if (ownerUserId && tripId && !canAccessUserPhoto(authReq.user.id, ownerUserId, tripId, assetId, 'immich')) {
         return res.status(403).send('Forbidden');
     }
     const result = await proxyOriginal(authReq.user.id, assetId, ownerUserId);

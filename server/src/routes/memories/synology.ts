@@ -116,7 +116,7 @@ router.get('/assets/:tripId/:photoId/:ownerId/:kind', authenticate, async (req: 
     const { size = "sm" } = req.query;
 
     if (kind !== 'thumbnail' && kind !== 'original') {
-        handleServiceResult(res, fail('Invalid asset kind', 400));
+        return handleServiceResult(res, fail('Invalid asset kind', 400));
     }
 
     if (!canAccessUserPhoto(authReq.user.id, Number(ownerId), tripId, photoId, 'synologyphotos')) {
